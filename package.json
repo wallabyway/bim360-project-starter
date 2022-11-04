@@ -1,0 +1,23 @@
+{
+  "name": "bim360-project-starter",
+  "version": "1.0.0",
+  "description": "start a new bim360 project, from a command line tool",
+  "main": "cli.mjs",
+  "dependencies": {
+    "commander": "^9.4.1",
+    "node-fetch": "^3.2.10"
+  },
+  "bin": {
+    "bim360cli": "cli.mjs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wallabyway/bim360-project-starter.git"
+  },
+  "author": "twitter@micbeale (github@wallabyway)",
+  "license": "MIT",
+  "homepage": "https://github.com/wallabyway/bim360-project-starter#readme"
+}
