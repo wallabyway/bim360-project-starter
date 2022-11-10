@@ -15,7 +15,6 @@ export TOKEN=1234
 ```
 
 
-
 ### RUN
 
 then run the command line tool, like this:
@@ -39,3 +38,28 @@ Commands:
   worksharing <folder_id>                           create a new Revit cloud worksharing file in a folder
   help [command]                                    display help for command
 ```
+
+
+
+### LOGIN
+
+If you don't use the TOKEN for login, then you can use 3-legged authentication, using the `login` command.
+
+#### STEPS
+
+1. set the following environments:
+```
+export APS_CLIENT=1234
+export APS_SECRET=1234
+export APS_REFRESH_TOKEN=empty
+```
+
+2. run the command:
+```
+bim360cli login
+```
+
+3. Open a browser at localhost:8000
+4. Login with your BIM360/ACC admin account
+
+5. Done.  Once logged in, you will notice the APS_REFRESH_TOKEN will be updated.
