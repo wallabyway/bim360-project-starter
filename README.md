@@ -20,16 +20,24 @@ export TOKEN=1234
 then run the command line tool, like this:
 
 ```
-bim360cli -h
+bim360cli createprojectfromtemplate <template project ID> <new project name> <json of address1, add2, type, etc>
 ```
+
+This will create a new project, based on the template project, and copies the folders, role permissions and files too.
 
 
 
 ### LIST OF COMMANDS
 
 ```
+bim360cli -h
+```
+
+
+```
 Commands:
   login                                             opens a BIM360/ACC login page in a browser where you login, and the refresh token is captured.
+  createprojectfromtemplate                         create a new project from template
   list                                              list BIM 360 Project Templates.  You will create a new Project from one of these existing Project templates
   accounts                                          list all ACC/BIM 360 account IDs.  The new Project you will create, will go under this Account ID
   new <project_name>                                create a new Project, returns an ID
