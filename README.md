@@ -1,5 +1,7 @@
 # bim360-project-starter
-Start a new Project in BIM360 - create users, folders, Template Revit files
+Start a new Project in BIM360/ACC based on a Project Template, using Autodesk APIs.   
+
+When you create a new project, specify the template project, and it will copy the template's folders, roles and folder permissions, into a new empty project.  Then use the 'copyFiles' command, to recursively copy all of the template's files (Revit/Navis/PDF/etc) into the new project.
 
 ### INSTALL
 ```
@@ -28,6 +30,7 @@ bim360cli -h
 
 ```
 Commands:
+  login                                             opens a BIM360/ACC login page in a browser where you login, and the refresh token is captured.
   list                                              list BIM 360 Project Templates.  You will create a new Project from one of these existing Project templates
   accounts                                          list all ACC/BIM 360 account IDs.  The new Project you will create, will go under this Account ID
   new <project_name>                                create a new Project, returns an ID
