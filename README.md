@@ -47,6 +47,10 @@ Commands:
   help [command]                                    display help for command
 ```
 
+### POSTMAN
+
+See the attached postman collection, to inspect the 'newProjectFromTemplate'' API.
+
 
 
 ### LOGIN
