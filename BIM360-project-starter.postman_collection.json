@@ -1,0 +1,134 @@
+{
+	"info": {
+		"_postman_id": "ec37c39b-456a-4ce7-8e43-ec006aa4e573",
+		"name": "BIM360-project-starter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5272900"
+	},
+	"item": [
+		{
+			"name": "copy Project from Template (src and dst)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BIM360_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"services\": [\n        {\n            \"serviceName\": \"projectAdministration\"\n        },\n        {\n            \"serviceName\": \"documentManagement\"\n        },\n        {\n            \"serviceName\": \"insight\"\n        }\n    ],\n    \"template\": {\n        \"projectId\": \"{{src_project_id}}\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://developer.api.autodesk.com/bim360/admin/v1/projects/{{dst_project_id}}",
+					"protocol": "https",
+					"host": [
+						"developer",
+						"api",
+						"autodesk",
+						"com"
+					],
+					"path": [
+						"bim360",
+						"admin",
+						"v1",
+						"projects",
+						"{{dst_project_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create Empty Project",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{BIM360_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"services\": [\n        {\n            \"serviceName\": \"projectAdministration\"\n        },\n        {\n            \"serviceName\": \"documentManagement\"\n        },\n        {\n            \"serviceName\": \"insight\"\n        }\n    ],\n    \"template\": {\n        \"projectId\": \"{{dst_project_id}}\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://developer.api.autodesk.com/bim360/admin/v1/projects/{dst_project_id}",
+					"protocol": "https",
+					"host": [
+						"developer",
+						"api",
+						"autodesk",
+						"com"
+					],
+					"path": [
+						"bim360",
+						"admin",
+						"v1",
+						"projects",
+						"{dst_project_id}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BIM360_token",
+			"value": ""
+		},
+		{
+			"key": "dst_project_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "src_project_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
