@@ -1,0 +1,29 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "pwa-node",
+			"request": "launch",
+			"name": "Launch Program",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}/cli.mjs",
+			//"args": ["login", "d8RvTdcyWYHtiyDVVbj7GVJIeRj6KyIA", "lUdulSbKEG9MrIJ6" ],
+			//"args": ["accounts"],
+			//"args": ["list", "a4f95080-84fe-4281-8d0a-bd8c885695e0"],
+			//"args": ["importusers", "https://sheets.googleapis.com/v4/spreadsheets/1yxfWCfmhq-j_MC06iAoKsxNBummpjsleC6a9Ad5M6aM/values/users?key=AIzaSyB-P6t82sJcClwhyCRhDNsiMdBTNH0BCyo"],
+			"args": ["adduserstoproject", "https://sheets.googleapis.com/v4/spreadsheets/1yxfWCfmhq-j_MC06iAoKsxNBummpjsleC6a9Ad5M6aM/values/roles?key=AIzaSyB-P6t82sJcClwhyCRhDNsiMdBTNH0BCyo"],
+			//"args": ["new", "a4f95080-84fe-4281-8d0a-bd8c885695e0", "Crazy5", "{'test':'none'}"],
+			//"args": ["template", "b5135e2b-c255-4cd0-a160-79c73835775a", "a173b2ef-0306-4a95-8243-a9ce7009e5d6"],
+			"env": { 
+				"TOKEN2":"eyJhbGciOiJSUzI1NiIsImtpZCI6IlU3c0dGRldUTzlBekNhSzBqZURRM2dQZXBURVdWN2VhIn0.eyJzY29wZSI6WyJkYXRhOmNyZWF0ZSIsImFjY291bnQ6cmVhZCIsImFjY291bnQ6d3JpdGUiLCJidWNrZXQ6cmVhZCIsInVzZXI6cmVhZCIsInZpZXdhYmxlczpyZWFkIiwiZGF0YTpyZWFkIiwidXNlci1wcm9maWxlOnJlYWQiLCJkYXRhOnNlYXJjaCJdLCJjbGllbnRfaWQiOiJkOFJ2VGRjeVdZSHRpeURWVmJqN0dWSkllUmo2S3lJQSIsImF1ZCI6Imh0dHBzOi8vYXV0b2Rlc2suY29tL2F1ZC9hand0ZXhwNjAiLCJqdGkiOiJaV2ZseXhCcXZaQ3pVSU9zZkdCZlJXamJPd2FTT1pUeHNkdHFpNkZjY2F0UzNZd0FtWGlyV1NLVmQydWd5V2RTIiwiZXhwIjoxNjY4NjQ4NDIwfQ.NpoJfmNNBlivVTPc9sZjbJd7-QaWF3UjT5G1WodajNNKNm2vfaVVkcY1aIwpycocLWKKmzYwUTRpavpQYXP1EmP3-cjVyiBUmL2p4T3ITUFE06k2D64vF6yrzO-nS9CFFPZaeueeP9U-VUNoydC5oDeAXdjUY9UUB4czqSIMq_TLlwO0IzlJgZtFlu6LAoR7VH13dWg6gerk-XKUw4JjOiL3W8SwR1h-4Itcr9HJz1iWv9QpnAyfOn9MA_xoQJrH8qwjm8_ZGtHoXY56Jy8Rgfvdo5dBETngk8V5sS_LQZdM9RiJGfP7POYDb1i4l3Evp1RVlpRX5-TdfS2-U15dfw",
+				"TOKEN3":"",
+				"ACCOUNT_ID":"a4f95080-84fe-4281-8d0a-bd8c885695e0"
+			}
+		}
+	]
+}

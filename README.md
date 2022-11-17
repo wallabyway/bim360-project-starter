@@ -36,15 +36,17 @@ bim360cli -h
 
 ```
 Commands:
-  login                                             opens a BIM360/ACC login page in a browser where you login, and the refresh token is captured.
-  createprojectfromtemplate                         create a new project from template
-  list                                              list BIM 360 Project Templates.  You will create a new Project from one of these existing Project templates
-  accounts                                          list all ACC/BIM 360 account IDs.  The new Project you will create, will go under this Account ID
-  new <project_name>                                create a new Project, returns an ID
-  template <template_project_id> <new_project_id>   create a new Project, from a template
-  copyfiles <template_project_id> <new_project_id>  recursively copy files from template folder into destination folder
-  worksharing <folder_id>                           create a new Revit cloud worksharing file in a folder
-  help [command]                                    display help for command
+  login <key> <secret>                                 gets 2-legged with forge key/secret + get 3-legged access tokens via browser and BIM360/ACC login page
+  listaccounts                                         list all ACC/BIM 360 account IDs.  The new Project you will create, will go under this Account ID
+  listprojects                                         list BIM 360 Project Templates.  You will create a new Project from one of these existing Project templates
+  createproject <project_name>                         create a new Project, returns a projectID
+  copytemplate <new_project_id> <template_project_id>  copy template folders/roles, into new Project
+  importusers <g_spreadsheet_url>                      import users from google spreadsheet, into a bim360 hub
+  adduserstoproject <project_id> <g_spreadsheet_url>   Adds users (project admin and project user) to a project, from google spreadsheet
+  patchuserroles <g_spreadsheet_url>                   patch user roles, from google spreadsheet, into bim360
+  copyfiles <template_project_id> <new_project_id>     recursively copy files from template folder into destination folder
+  createworksharing <folder_id>                        create a new Revit cloud worksharing file in a folder
+  help [command]                                       display help for command
 ```
 
 ### POSTMAN
@@ -59,19 +61,39 @@ If you don't use the TOKEN for login, then you can use 3-legged authentication, 
 
 #### STEPS
 
-1. set the following environments:
-```
-export APS_CLIENT=1234
-export APS_SECRET=1234
-export APS_REFRESH_TOKEN=empty
-```
-
 2. run the command:
 ```
-bim360cli login
+bim360cli login <KEY> <SECRET>
 ```
 
-3. Open a browser at localhost:8000
+3. This will open a browser at localhost:8000
 4. Login with your BIM360/ACC admin account
+5. Done.  Once logged in, run the two `export TOKEN2=...;  export TOKEN3=...` in a shell
 
-5. Done.  Once logged in, you will notice the APS_REFRESH_TOKEN will be updated.
+
+### CREATE EMPTY PROJECT
+
+JSON example:
+```
+		{
+			locale: "en",
+			currency : "USD",
+			name : "my project name",
+			address_line_1 : "",
+			address_line_2: "",
+			city: "",
+			postal_code: "",
+			country: "US",
+			job_number: "",
+			business_unit_id: "",
+			timezone: "America/New_York",
+			language: "en",
+			construction_type: "",
+			contract_type: "",
+			state_or_province: "",
+			start_date: "",
+			end_date: "",
+			project_type: "Wind Farm",
+			value: ""
+		}
+```
