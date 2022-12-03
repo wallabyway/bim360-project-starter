@@ -21,57 +21,45 @@ export class projects {
 		return data.map( item => { return { id: item.id, name: item.name }});		
 	}
 
-	static async createEmpty(token, account_id, user_email, params) {
+	static async createEmpty(token, account_id, params ) {
 		// USES 2-lEGGED
 		const url = `https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/projects`
 		const res = await fetch(url, { method: 'POST', body:JSON.stringify(params), headers: _header(token) });
 		const project_id = (await res.json()).id;
-		//wait project status = active: 
-		// https://developer.api.autodesk.com/hq/v1/accounts/:account_id/projects/:project_id
-		let status = "pending";
-		while (status != "active") {
-			await delay(2000);
-			const res1 = await fetch(`https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/projects/${project_id}`, { headers: _header(token) });
-			status = (await res1.json());
-			console.log(res1);
-			console.log(`Waiting on new Project Status: ${status}`)
-		};
-		await delay(2000);
-		const folder_id = await this.getTopFolderID(token, account_id, project_id)
-		const company_id = await this.getCompanyIDFromProject(token, account_id, project_id);
-		const user_id = await this.assignSelfToProject(token, account_id, company_id, user_email );
-		return [project_id, folder_id];
+		console.log(`created project "${project_id}"`)
+		return project_id;
 	}
 
-	static async assignSelfToProject(token, account_id, company_id, user_email) {
+	static async getCompanyandUserFromEmail(token, account_id, user_email) {
+		const res = await (await fetch(`https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/users/search?email=${user_email}&limit=1`, { headers: _header(token) })).json();
+		return res[0];
+	}
+
+	static async assignSelfToProject(token, account_id, project_id, user_email) {
+		console.log(`assigning ${user_email} as project admin`)
+		const userObj = await this.getCompanyandUserFromEmail(token, account_id, user_email);
+
 		const body = {
 			"role": "project_admin",
 			"service_type": "doc_manager",
-			"company_id":company_id,
-			"email":user_email
+			"company_id": userObj.company_id,
+			"email": user_email
 		};
 		const res = await fetch(`https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/projects/${project_id}/users`, { 
-			method: 'POST', headers: { headers: _header(token) }, body: JSON.stringify(body) });
+			method: 'POST', headers: _header(token), body: JSON.stringify(body) });
 		const user = (await res.json());
-		await delay(2000);
+		console.log(user);
 		return user.id;
 	}
 
-	static async getTopFolderID(token, account_id, project_id) {
-		const res = await (await fetch(`https://developer.api.autodesk.com/project/v1/hubs/${account_id}/projects/${project_id}/topFolders&projectFilesOnly=true&excludeDeleted=true`, { headers: _header(token) })).json();
-		debugger;
-		return res.data[0].id;
+	static async getTopFolderURN(token, account_id, project_id) {
+		// check that project is activated, sleep and try again ?
+		console.log(`getting Root Folder of Project: ${project_id}`);
+		const res = await (await fetch(`https://developer.api.autodesk.com/project/v1/hubs/b.${account_id}/projects/b.${project_id}/topFolders?projectFilesOnly=true&excludeDeleted=true`, { headers: _header(token) })).json();
+		const topFolderURN = res.data.filter(i=>{return i.attributes.displayName=="Project Files"})[0].id;
+		return topFolderURN;
 	}
 
-	static async getCompanyIDFromProject(token, account_id, project_id) {
-		const res = await (await fetch(`https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/projects/${project_id}/companies?limit=1&offset=0`, { headers: _header(token) })).json();
-		debugger;
-		return res[0].id;
-	}
-
-	
-
-		
 
 	static async copyTemplate(token, template_project_id, dst_project_id) {
 		// USES 3-lEGGED
@@ -90,7 +78,20 @@ export class projects {
 		if (res.status != 202) 
 			console.log(res.status,res.statusText);
 		const out = await res.json();
-		await delay(10000);
+		console.log(`project activated, copying template ${template_project_id}... waiting 20seconds `);
+		await delay(20000);
+/*
+		//wait project status = active: 
+		// https://developer.api.autodesk.com/hq/v1/accounts/:account_id/projects/:project_id
+		let status = "pending";
+		while (status != "active") {
+			await delay(2000);
+			const res1 = await fetch(`https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/projects/${project_id}`, { headers: _header(token) });
+			status = (await res1.json()).status;
+			console.log(`Waiting on new Project Status: ${status}`)
+		};
+
+*/
 		return out;
 	}
 

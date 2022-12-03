@@ -57,23 +57,24 @@ program
 });
 
 program
-  .command('masterCreate <project_name> <template_project_id> <srcFolderURL> <dstFolderURL>')
+  .command('masterCreate <project_name> <template_project_id> <user_email>')
   .description('list BIM 360 Project Templates.  You will create a new Project from one of these existing Project templates')
-  .action(async (project_name, template_project_id, srcFolderURL, dstFolderURL) => {
+  .action(async (project_name, template_project_id, user_email) => {
 	defaults.name = project_name;
 	const empty_project_id = await projects.createEmpty(TOKEN2, ACCOUNT_ID, defaults);
-	await projects.assignSelfToProject(TOKEN2, ACCOUNT_ID, user_id);
 	await projects.copyTemplate(TOKEN3, template_project_id, empty_project_id);
-	await fileUtils.copyFiles(TOKEN2, srcFolderURL, dstFolderURL);
+	const user_id = await projects.assignSelfToProject(TOKEN2, ACCOUNT_ID, empty_project_id, user_email);
+	const template_topfolder_urn = await projects.getTopFolderURN(TOKEN2, ACCOUNT_ID, template_project_id);
+	// has template been fully copied over yet ?
+	const empty_topfolder_urn = await projects.getTopFolderURN(TOKEN2, ACCOUNT_ID, empty_project_id);
+	console.log('Copying Files...')
+	await fileUtils.copyFolderRecursively(TOKEN2, 
+		template_project_id, template_topfolder_urn, 
+		empty_project_id, empty_topfolder_urn
+  	);
+	delay(10000);
 	console.log("finished");
 });
-{
-	static async masterCreate(token, account_id, params, template_project_id) {
-
-	}
-
-
-}
 
 const defaults = {
 	"service_types":"inSight", //doc_manager

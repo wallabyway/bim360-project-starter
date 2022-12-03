@@ -14,6 +14,11 @@ export class fileUtils {
 		await this.copyFolderRecursively(token, sproject_id, sfolder_id, dproject_id, dfolder_id);
 	}
 
+	static parseURL(url_) {
+		const params = url_.split('/');
+		return [ `b.${params[4]}`, params[6] ];
+	}
+
 	// PURPOSE: recursively copy ACC/BIM360 files and folders, from source folder to destination folder.
 	// PRE-CONDITIONS: All Destination Folders must already exist, due to "Create New Project from Template"
 	// INPUTS: 2-legged token, source project_id & folder_id, destination project_id & folder_id
@@ -26,12 +31,11 @@ export class fileUtils {
 		console.log(`copying folder: ${sfolder_id} to ${dfolder_id}`);
 		for (const file of sdir) {
 			const filename = file.attributes.name;
-			const fileObj = await this.createEmptyFile(filename, dproject_id, dfolder_id, token);
-			const file_id = fileObj.data.id;
-
+			
 			console.log(`copying file: ${filename}`);
+			const file_id = await this.createEmptyFile(filename, dproject_id, dfolder_id, token);
+			const src_URL = this.createSrcURL(file.relationships.storage.data.id);
 			const [dst_signedURL, uploadkey] = await this.createDstSignedURL(file_id, token);
-			const src_URL = await this.createSrcURL(file.relationships.storage.data.id);
 			await this.copyFile(src_URL, dst_signedURL, token);
 			await this.finishSignedURL(file_id, uploadkey, token);
 			await this.createVersion(filename, dproject_id, dfolder_id, file_id, token);
@@ -39,29 +43,33 @@ export class fileUtils {
 		console.log(`finished copying folder: ${sfolder_id}`);
 	}
 
-	static parseURL(url_) {
-		const params = url_.split('/');
-		return [ `b.${params[4]}`, params[6] ];
-	}
-
-	static async fetchFolderContents(token, project_id, folder_id) {
-		const url = `https://developer.api.autodesk.com/data/v1/projects/${project_id}/folders/${folder_id}/contents`;
+	static async fetchFolderContents(token, project_id, folder_urn) {
+		const url = `https://developer.api.autodesk.com/data/v1/projects/b.${project_id}/folders/${folder_urn}/contents`;
 		const json = await ( await fetch(url, { headers: { Authorization: `Bearer ${token}` } }) ).json();
-		debugger;
 		return [json.included,json.data.filter( i => {return i.type=="folders"}).map(i => {return i.id})];
 	}
 
 
-	// IN: src URL to source file, this needs bearer TOKEN. dst = the destination signed URL, this must be an 'empty' file resource
+	// IN: src = plain URL pointing to source file, which requires bearer TOKEN for access. 
+	//     dst = a signedURL pointing to the destination file, which is an 'empty' file resource
 	static async copyFile(src, dst, token) {
 		const resp = await fetch(src, { headers: { Authorization: `Bearer ${token}` } });
-		const blob = await resp.blob();
-		const res = await fetch(dst, { method: 'PUT' , body: blob });
+		const res = await resp.blob();
+		const resp2 = await fetch(dst, { method:"PUT", body: res });
+		return resp2.status;
+	}
+/* 	static async copyFileStream(src, dst, token) {
+		const resp = await fetch(src, { headers: { Authorization: `Bearer ${token}` } });
+		const res = resp.body.pipe(fs.createWriteStream(dst));
 		return res.status;
 	}
+*/
 
+
+	// create an empty file resource on Forge OSS
+	// OUT: file_id
 	static async createEmptyFile(filename, project_id, folder_id, token) {
-        const res = await fetch( `https://developer.api.autodesk.com/data/v1/projects/${project_id}/storage`, 
+        const res = await fetch( `https://developer.api.autodesk.com/data/v1/projects/b.${project_id}/storage`, 
         {
             method: 'POST', 
             headers: {
@@ -85,11 +93,11 @@ export class fileUtils {
           }`
         });
         const obj = await res.json();
-		return obj;
+		return obj.data.id;
     }
 
 
-	static async createSrcURL(item_id) {
+	static createSrcURL(item_id) {
 		const url = `https://developer.api.autodesk.com/oss/v2/buckets/wip.dm.prod/objects/${item_id.split('/')[1]}`;
 		return url;
     }
@@ -116,12 +124,12 @@ export class fileUtils {
 
 	static async getStorageId(project_id, item_id, token) {
 		console.log(item_id)
-        const res = await (await fetch( `https://developer.api.autodesk.com/data/v1/projects/${project_id}/items/${item_id}/tip `, { headers: { Authorization: `Bearer ${token}` }})).json();
+        const res = await (await fetch( `https://developer.api.autodesk.com/data/v1/projects/b.${project_id}/items/${item_id}/tip `, { headers: { Authorization: `Bearer ${token}` }})).json();
         return res;//.included[0].storage.data.id;
     }
 
     static async createVersion( filename, project, folder, file_id, token ) {
-        const res = await fetch( `https://developer.api.autodesk.com/data/v1/projects/${project}/items`, 
+        const res = await fetch( `https://developer.api.autodesk.com/data/v1/projects/b.${project}/items`, 
         {
             method: 'POST', 
             headers: {
