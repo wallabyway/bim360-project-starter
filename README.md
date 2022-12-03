@@ -8,24 +8,53 @@ When you create a new project, specify the template project, and it will copy th
 npm i -g bim360-project-starter
 ```
 
-and configure a token:
+
+### SETUP
+
+first login, and add your Key and Secret.
+Note: Get your [Forge Key and Secret](http://forge.autodesk.com/myapps/) by following [this tutorial](https://forge-tutorials.autodesk.io/#create-an-account) and then give your Key permission to access your Hub [by provisioning it](https://forge-tutorials.autodesk.io/#provision-access-in-other-products)
 
 ```
-export TOKEN=1234
+bim360cli login FORGE_KEY FORGE_SECRET
+```
+
+> A browser will appear, and you will use this to login with your admin account.
+
+Set the environment by copying and pasting the token:
+
+```
+TOKEN2=1234;
+TOKEN3=1234;
+```
+
+Check everything is working, by running this command:
+
+```
+bim360cli listaccounts
 ```
 
 
-### RUN
+## RUN
 
-then run the command line tool, like this:
+List the projects, and find your template project:
 
 ```
-bim360cli createprojectfromtemplate <template project ID> <new project name> <json of address1, add2, type, etc>
+bim360cli listprojects
 ```
 
-This will create a new project, based on the template project, and copies the folders, role permissions and files too.
+
+Using the template_id, run this command:
+
+```
+bim360cli masterCreate <project_name> <template_project_id> <user_email>
+```
+
+choose a project name, and the email of the project-admin you want to assign to the project initially.
+
+This will create a new project, and duplicate your template project.  It will copy folders, files, and role permissions on the folders.
 
 
+<hr>
 
 ### LIST OF COMMANDS
 
@@ -36,42 +65,25 @@ bim360cli -h
 
 ```
 Commands:
-  login <key> <secret>                                 gets 2-legged with forge key/secret + get 3-legged access tokens via browser and BIM360/ACC login page
-  listaccounts                                         list all ACC/BIM 360 account IDs.  The new Project you will create, will go under this Account ID
-  listprojects                                         list BIM 360 Project Templates.  You will create a new Project from one of these existing Project templates
-  createproject <project_name>                         create a new Project, returns a projectID
-  copytemplate <new_project_id> <template_project_id>  copy template folders/roles, into new Project
-  importusers <g_spreadsheet_url>                      import users from google spreadsheet, into a bim360 hub
-  adduserstoproject <project_id> <g_spreadsheet_url>   Adds users (project admin and project user) to a project, from google spreadsheet
-  patchuserroles <g_spreadsheet_url>                   patch user roles, from google spreadsheet, into bim360
-  copyfiles <template_project_id> <new_project_id>     recursively copy files from template folder into destination folder
-  createworksharing <folder_id>                        create a new Revit cloud worksharing file in a folder
-  help [command]                                       display help for command
+  login <key> <secret>                                            gets 2-legged with forge key/secret + get 3-legged access tokens via browser and BIM360/ACC login page
+  listaccounts                                                    list all ACC/BIM 360 account IDs.  The new Project you will create, will go under this Account ID
+  listprojects                                                    list BIM 360 Project Templates.  You will create a new Project from one of these existing Project
+                                                                  templates
+  masterCreate <project_name> <template_project_id> <user_email>  creates a new project, and copies template IDs folders and files. assigns user_email as project-admin
+  createproject <project_name>                                    create a new Project, returns a projectID
+  copytemplate <new_project_id> <template_project_id>             copy template folders/roles, into new Project
+  importusers <g_spreadsheet_url>                                 import users from google spreadsheet, into a bim360 hub
+  assignusers <project_id> <g_spreadsheet_url>                    Assign users to a project, from google spreadsheet
+  copyfiles <srcFolderURL> <dstFolderURL>                         copy files in root folder of template into destination project root folder
+  createworksharing <folder_id>                                   create a new Revit cloud worksharing file in a folder
+  help [command]                                                  display help for command
 ```
 
-### POSTMAN
-
-See the attached postman collection, to inspect the 'newProjectFromTemplate'' API.
 
 
+### CREATE EMPTY PROJECT SCHEMA
 
-### LOGIN
-
-If you don't use the TOKEN for login, then you can use 3-legged authentication, using the `login` command.
-
-#### STEPS
-
-2. run the command:
-```
-bim360cli login <KEY> <SECRET>
-```
-
-3. This will open a browser at localhost:8000
-4. Login with your BIM360/ACC admin account
-5. Done.  Once logged in, run the two `export TOKEN2=...;  export TOKEN3=...` in a shell
-
-
-### CREATE EMPTY PROJECT
+There will be an option to modify these values, during project creation.  Currently, it's just the project name and these defaults.
 
 JSON example:
 ```

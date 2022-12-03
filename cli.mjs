@@ -58,7 +58,7 @@ program
 
 program
   .command('masterCreate <project_name> <template_project_id> <user_email>')
-  .description('list BIM 360 Project Templates.  You will create a new Project from one of these existing Project templates')
+  .description('creates a new project, and copies template IDs folders and files. assigns user_email as project-admin')
   .action(async (project_name, template_project_id, user_email) => {
 	defaults.name = project_name;
 	const empty_project_id = await projects.createEmpty(TOKEN2, ACCOUNT_ID, defaults);
