@@ -35,7 +35,7 @@ export class auth {
 				process.env['TOKEN3']=params.access_token;
 			}
 			res.writeHead(200, { 'content-type': 'text/html' });
-			fs.createReadStream('index.html').pipe(res);
+			fs.createReadStream('https://wallabyway.github.io/bim360-project-starter/index.html').pipe(res);
 		});
 		server.listen(8080);
 		return server;
