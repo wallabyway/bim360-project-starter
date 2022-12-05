@@ -1,7 +1,4 @@
-
-
 import http from 'http';
-import fs from 'fs';
 import url from 'url';
 import child_process from 'child_process';
 import fetch from 'node-fetch';
@@ -14,20 +11,19 @@ export class auth {
 		child_process.exec('open http://localhost:8080/');
 	}
 
-	static async login_twolegged(key, secret) {
+	static async login_twolegged(KEY, SECRET) {
 		const url = `https://developer.api.autodesk.com/authentication/v1/authenticate`;
-		const header = { 'Content-Type': 'application/x-www-form-urlencoded' }
-		//const scope = "account:read account:write bucket:create bucket:read bucket:update bucket:delete data:read data:write data:create data:search user:read user:write user-profile:read viewables:read";
-		const scope2 = "data%3Acreate%20account%3Aread%20account%3Awrite%20bucket%3Aread%20user%3Aread%20viewables%3Aread%20data%3Aread%20user-profile%3Aread%20data%3Asearch"; 
-		const body = `grant_type=client_credentials&client_id=${key}&client_secret=${secret}&scope=${scope2}`;
-		//const body = `grant_type=client_credentials&client_id=${key}&client_secret=${secret}&scope=${encodeURIComponent(scope)}`;
-		const resp = await fetch( url, { method: 'POST', headers: header, body: body });
-		const json = await resp.json();
-		return json.access_token;
+		const SCOPE = encodeURIComponent("data:create account:read account:write bucket:read user:read viewables:read data:read user-profile:read data:search");
+		const tokenResponse = await (await fetch( url, { 
+			method: 'POST', 
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
+			body: `grant_type=client_credentials&client_id=${ KEY }&client_secret=${ SECRET }&scope=${ SCOPE }` 
+		})).json();
+		return tokenResponse.access_token;
 	}
 
 	static startMiniServer() {
-		const server = http.createServer((req, res) => {
+		const server = http.createServer(async (req, res) => {
 
 			const params = url.parse(req.url, true).query;
 			if (params.access_token) {
@@ -35,7 +31,8 @@ export class auth {
 				process.env['TOKEN3']=params.access_token;
 			}
 			res.writeHead(200, { 'content-type': 'text/html' });
-			fs.createReadStream('https://wallabyway.github.io/bim360-project-starter/index.html').pipe(res);
+			const indexHTML = await (await fetch( 'https://wallabyway.github.io/bim360-project-starter/index.html')).text();
+			res.end(indexHTML);
 		});
 		server.listen(8080);
 		return server;
