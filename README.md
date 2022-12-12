@@ -113,16 +113,18 @@ RESULT:
 It will take about 30 seconds to complete the process.  
 All folders, files, and role permissions on the folders, will be copied from the template, to the new project.
 
-Once finished, a new browser link will appear.
-Click on this link, to open the new project in BIM 360.
+Once finished, a new browser link will appear (circled in red)...
 
+![terminal-result](https://user-images.githubusercontent.com/440241/206986811-c992a95a-867a-497c-94a8-a80390444be1.JPG)
+
+
+Open this link in a browser, to verify the new project in BIM 360.
 
 <br> 
 
 ### STEP 4: VERIFY
  
-
-Click on this link, to open the new project in BIM 360 and verify the project was successfully created and cloned.
+Verify the project was successfully created and cloned.
 
 All Done !
 
