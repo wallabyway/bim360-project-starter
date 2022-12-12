@@ -1,7 +1,7 @@
 # bim360-project-starter
-Start a new Project in BIM360/ACC based on a Project Template, using Autodesk APIs.   
+Create a new Project in BIM360/ACC copied from a Project Template, using a command line tool called '`bim360cli`'.  It uses [Autodesk APIs](aps.autodesk.com) under the hood.
 
-When you create a new project, specify the template project, and it will copy the template's folders, roles and folder permissions, into a new empty project.  Then use the 'copyFiles' command, to recursively copy all of the template's files (Revit/Navis/PDF/etc) into the new project.
+Open a Terminal, and follow the steps below:
 
 ### INSTALL
 ```
@@ -9,55 +9,127 @@ npm i -g bim360-project-starter
 ```
 
 
-### SETUP
+# SETUP
 
-first login, and add your Key and Secret.
-Note: Get your [Forge Key and Secret](http://forge.autodesk.com/myapps/) by following [this tutorial](https://forge-tutorials.autodesk.io/#create-an-account) and then give your Key permission to access your Hub [by provisioning it](https://forge-tutorials.autodesk.io/#provision-access-in-other-products)
+Authenticate both 2-legged and 3-legged tokens.
+
+1. Start by getting your [Forge Key and Secret](http://forge.autodesk.com/myapps/)
+2. Following [this tutorial](https://forge-tutorials.autodesk.io/#create-an-account) to provision [access into your Hub](https://forge-tutorials.autodesk.io/#provision-access-in-other-products)
+
+2. Add KEY & SECRET into your environment and run `login`, like so:
 
 ```
 export KEY=1234;
 export TOKEN=1234;
 bim360cli login
 ```
+3. A browser will launch.  Login to BIM 360 as account admin.
 
-> A browser will appear, and you will use this to login with your admin account.
-
-From the browser, copy the text, into the terminal to set the TOKEN3 environment variable, like this...
-
-```
-TOKEN3=1234;
-```
-
-Check everything is working, by listing all the hubs:
+4. Once logged in, copy the TOKEN3 text, into the terminal and set TOKEN3 environment variable, like this...
 
 ```
-bim360cli listhubs
+export TOKEN3=1234;
 ```
 
+Check everything is working, by running step 1 below...
 
-## RUN
+<br><br>
 
-Using one of the hubs listed, now List the projects and template project:
+# GET STARTED
+
+There are 4 steps:
+
+1. `listhubs' - Find your Hub ID
+2. `listprojects' - Find your Template ID
+3. 'masterCreate` - Create Project
+4. Verify
+
+<br>
+
+### STEP 1 - GET HUB
+
+Run the command...
 
 ```
-bim360cli listprojects <hub id>
+> bim360cli listhubs
 ```
 
+You should see a list of hubs, similar to this:
 
-Choose one of the template_id, and run this command to create a new project with the template.
-You will need to provide a project name, an email of the project-admin that will be assigned to the project
+| index | id | name | region |
+| - | - | - | - |
+| 0| 'a4f95080-84fe-4281-8d0a-bd8c885695e0'| Autodesk Forge Partner Development |   'US' |
+|1| '489c5e7a-c6c0-4212-81f3-3529a621210b' |     'Developer Advocacy Support'  |  'US'  |
+
+
+<br>
+
+### STEP 2 - GET TEMPLATE ID
+
+Find your Template ID, by listing the projects, with command  `listprojects` `<hub id>`  
+Use the HUB ID, from the previous step, like this:
 
 ```
-bim360cli masterCreate <hub id> <project_name> <template_project_id> <user_email>
+> bim360cli listprojects a4f95080-84fe-4281-8d0a-bd8c885695e0
+```
+Which gives a list of projects, like this:
+
+| (index) |                   id                   |             name             |
+|-|-|-|
+|    0    | '743cbb3e-9549-4223-a513-b059dbe2681e' |       'nonadsk-craz1'        |
+|    1    | '55b9a76f-ff85-4831-8bee-e2cedc10b967' |   'xiaodong-new -project'    |
+|    2    | 'b5135e2b-c255-4cd0-a160-79c73835775a' |      'crazyNewProject'       |
+|    3    | '03342a00-a231-49fc-8e21-4603d2f4da7d' |    'Michael_Test_Project'    |
+
+
+<br><br>
+
+### STEP 3 - CREATE
+
+Now, the important bit. Create a new project.
+
+Here is the main command:
+```
+bim360cli <hub_id> <project_name> <template_project_id> <user_email>
 ```
 
-It will take about 30 seconds to complete the process.  The process includes copying folders, files, and role permissions on the folders.
-This command will complete and provide a browser link.  
-Click on this link to see the new project, in BIM 360.
+This requires a few inputs...
+- `<hub id>` - this is the same Hub_id as STEP 2
+- `<project_name>` - the name of the new project
+- `<template_project_id>` - a template ID, from STEP 2. This will be the project you want to clone
+- `<user_email>` - Provide an email. This email / user, will be the project-admin for the new project
 
+Example:
+```
+bim360cli masterCreate a4f95080-84fe-4281-8d0a-bd8c885695e0 myNewProject b5135e2b-c255-4cd0-a160-79c73835775a the-boss@gmail.com
+```
+
+RESULT:
+
+
+`open` [https://docs.b360.autodesk.com/projects/743cbb3e-9549-4223-a513-b059dbe2681e/folders/urn:adsk.wipprod:fs.folder:co.dlh-TZTOTSepUTxtSP09og/detail](https://docs.b360.autodesk.com/projects/743cbb3e-9549-4223-a513-b059dbe2681e/folders/urn:adsk.wipprod:fs.folder:co.dlh-TZTOTSepUTxtSP09og/detail)
+
+
+It will take about 30 seconds to complete the process.  
+All folders, files, and role permissions on the folders, will be copied from the template, to the new project.
+
+Once finished, a new browser link will appear.
+Click on this link, to open the new project in BIM 360.
+
+
+<br> 
+
+### STEP 4: VERIFY
+ 
+
+Click on this link, to open the new project in BIM 360 and verify the project was successfully created and cloned.
+
+All Done !
+
+<br>
 <hr>
 
-### LIST OF COMMANDS
+# LIST OF COMMANDS
 
 ```
 bim360cli -h
@@ -76,7 +148,7 @@ Commands:
   assignusers <project_id> <g_spreadsheet_url>                             Assign users to a project, from google spreadsheet
   copyfiles <srcFolderURL> <dstFolderURL>                                  copy files in root folder of template into destination project root folder
   createworksharing <folder_id>                                            create a new Revit cloud worksharing file in a folder
-  help [command]                                                           display help for command
+  help [command]                                                           display help for command                                                      display help for command
 ```
 
 
