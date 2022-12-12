@@ -5,7 +5,7 @@ import { projects } from './api.mjs';
 import {auth} from './auth.mjs';
 import {fileUtils} from './fileUtils.mjs';
 
-const { TOKEN2, TOKEN3, ACCOUNT_ID } = process.env;
+const { KEY, SECRET, TOKEN3, HUB_ID } = process.env;
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 /*
@@ -21,53 +21,56 @@ Commands:
   help [command]                                       display help for command
 */
 
-
-if (process.argv[2]=="login") {
-	const server = auth.startMiniServer();
-} else if (!TOKEN2) {
-    console.warn('TOKEN is missing.  Please login and set the TOKEN environment variable. ie. export TOKEN2=1234; export TOKEN3=1234');
+if (!KEY && !SECRET) {
+    console.warn('KEY and SECRET are missing.  Please run the command line, export KEY=1234; export SECRET=1234 and try again');
     process.exit(1);
 }
 
+const TOKEN2 = await auth.login_twolegged(KEY, SECRET);
+
+if (process.argv[2]=="login") {
+	const server = auth.startMiniServer();
+}
+
 program
-.command('login <key> <secret>')
-.description('gets 2-legged with forge key/secret + get 3-legged access tokens via browser and BIM360/ACC login page')
-.action(async (key, secret) => {
+.command('login')
+.description('Opens a browser where you login via BIM360/ACC.  This gets the 3-legged token needed by the create template API.')
+.action(async () => {
 	auth.launchBrowserForLogin();
-	const token = await auth.login_twolegged(key, secret);
-	console.log(`2 legged login successful.  now add TOKEN2 to your environment, like this...`);
-	console.log(`export TOKEN2=${token};`);
 });
 
 
 program
-  .command('listaccounts')
-  .description('list all ACC/BIM 360 account IDs.  The new Project you will create, will go under this Account ID')
+  .command('listhubs')
+  .description('list all ACC/BIM 360 hubs and their IDs.')
   .action(async () => {
     console.table(await projects.showHubs(TOKEN3));
-	console.log('export ACCOUNT_ID= <pick one^^^>');
+	console.log('export HUB_ID= <pick one^^^>');
   });
 
 
 program
-  .command('listprojects')
-  .description('list BIM 360 Project Templates.  You will create a new Project from one of these existing Project templates')
-  .action(async () => {
-    console.table(await projects.list(TOKEN2, ACCOUNT_ID));
+  .command('listprojects <hub_id>')
+  .description('list BIM 360 Projects and Template IDs.  Use this to pick your Template ID')
+  .action(async (hub_id) => {
+    console.table(await projects.list(TOKEN2, hub_id));
 });
 
 program
-  .command('masterCreate <project_name> <template_project_id> <user_email>')
+  .command('masterCreate <hub_id> <project_name> <template_project_id> <user_email>')
   .description('creates a new project, and copies template IDs folders and files. assigns user_email as project-admin')
-  .action(async (project_name, template_project_id, user_email) => {
+  .action(async (hub_id, project_name, template_project_id, user_email) => {
 	defaults.name = project_name;
-	const empty_project_id = await projects.createEmpty(TOKEN2, ACCOUNT_ID, defaults);
+	const empty_project_id = await projects.createEmpty(TOKEN2, hub_id, defaults);
 	await projects.copyTemplate(TOKEN3, template_project_id, empty_project_id);
-	const user_id = await projects.assignSelfToProject(TOKEN2, ACCOUNT_ID, empty_project_id, user_email);
-	const template_topfolder_urn = await projects.getTopFolderURN(TOKEN2, ACCOUNT_ID, template_project_id);
+	const user_id = await projects.assignSelfToProject(TOKEN2, hub_id, empty_project_id, user_email);
+	const template_topfolder_urn = await projects.getTopFolderURN(TOKEN2, hub_id, template_project_id);
 	// has template been fully copied over yet ?
-	const empty_topfolder_urn = await projects.getTopFolderURN(TOKEN2, ACCOUNT_ID, empty_project_id);
-	console.log('Copying Files...')
+	const empty_topfolder_urn = await projects.getTopFolderURN(TOKEN2, hub_id, empty_project_id);
+
+	console.log(`click this link to open new Project: https://docs.b360.autodesk.com/projects/${empty_project_id}/folders/${empty_topfolder_urn}/detail`);
+
+	console.log('In the meantime, I"m copying the Files over... back soon');
 	await fileUtils.copyFolderRecursively(TOKEN2, 
 		template_project_id, template_topfolder_urn, 
 		empty_project_id, empty_topfolder_urn
@@ -97,7 +100,7 @@ program
   .description('create a new Project, returns a projectID')
   .action(async (project_name) => {
 	defaults.name = project_name;
-	const project_id = await projects.createEmpty(TOKEN2, ACCOUNT_ID, defaults);
+	const project_id = await projects.createEmpty(TOKEN2, HUB_ID, defaults);
     console.log(`created project.  Project_ID is: ${project_id}`);
 });
 
@@ -114,7 +117,7 @@ program
   .command('importusers <g_spreadsheet_url>')
   .description('import users from google spreadsheet, into a bim360 hub')
   .action(async (g_spreadsheet_url) => {
- 	const res = await projects.importUsersFromGoogleSheets(TOKEN2, ACCOUNT_ID, g_spreadsheet_url);
+ 	const res = await projects.importUsersFromGoogleSheets(TOKEN2, HUB_ID, g_spreadsheet_url);
     console.table(res);
  });
 
@@ -122,7 +125,7 @@ program
   .command('assignusers <project_id> <g_spreadsheet_url>')
   .description('Assign users to a project, from google spreadsheet')
   .action(async (project_id, g_spreadsheet_url) => {
- 	const res = await projects.addUserRoles(TOKEN3, TOKEN2, ACCOUNT_ID, project_id, g_spreadsheet_url);
+ 	const res = await projects.addUserRoles(TOKEN3, TOKEN2, HUB_ID, project_id, g_spreadsheet_url);
     console.table(res);
  });
 

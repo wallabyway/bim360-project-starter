@@ -15,9 +15,11 @@ export class projects {
 
 	static async list(token, account_id) {
 		// USES 2-lEGGED
-		//const url = `https://developer.api.autodesk.com/bim360/admin/v1/accounts/${account_id}/projects?limit=500&sort[]=name+asc&filter[type]=-&filter[platform]=bim360`;
+		//"https://developer.api.autodesk.com/ea-api/v1/project_entitlements?service_categories=next_gen%2Cadmin&current_service_type=doc_manager&include_services=false&include_containers=false&limit=300&locale=en"
+		//const url = `https://developer.api.autodesk.com/bim360/admin/v1/accounts/${account_id}/projects?limit=500&sort[]=name+asc`;
 		const url = `https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/projects`;
 		const data = await (await fetch(url, {headers: _header(token)} )).json();
+		console.log(data);
 		return data.map( item => { return { id: item.id, name: item.name }});		
 	}
 
