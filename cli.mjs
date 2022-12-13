@@ -29,7 +29,7 @@ if (!KEY && !SECRET) {
 const TOKEN2 = await auth.login_twolegged(KEY, SECRET);
 
 if (process.argv[2]=="login") {
-	const server = auth.startMiniServer();
+	const server = auth.startMiniServer(TOKEN2);
 }
 
 program
