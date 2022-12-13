@@ -58,10 +58,13 @@ program
 
 program
   .command('masterCreate <hub_id> <project_name> <template_project_id> <user_email>')
+  .option('--params <string>', 'default json parameters', '{"service_types":"inSight","start_date":"2023-05-02","end_date":"2024-04-03","project_type":"Wind Farm","value":3000,"city":"New York","state_or_province":"New York","postal_code":"10011","country":"United States","timezone":"America/New_York","language":"en","currency":"USD"}')
   .description('creates a new project, and copies template IDs folders and files. assigns user_email as project-admin')
-  .action(async (hub_id, project_name, template_project_id, user_email) => {
-	defaults.name = project_name;
-	const empty_project_id = await projects.createEmpty(TOKEN2, hub_id, defaults);
+  .action(async (hub_id, project_name, template_project_id, user_email, options) => {
+	let params = JSON.parse(options.params);
+	params.name = project_name;
+	console.log(params);
+	const empty_project_id = await projects.createEmpty(TOKEN2, hub_id, params);
 	await projects.copyTemplate(TOKEN3, template_project_id, empty_project_id);
 	const user_id = await projects.assignSelfToProject(TOKEN2, hub_id, empty_project_id, user_email);
 	const template_topfolder_urn = await projects.getTopFolderURN(TOKEN2, hub_id, template_project_id);
@@ -78,22 +81,6 @@ program
 	delay(10000);
 	console.log("finished");
 });
-
-const defaults = {
-	"service_types":"inSight", //doc_manager
-	"start_date": "2023-05-02",
-	"end_date": "2024-04-03",
-	"project_type": "Wind Farm",
-	"value": 3000,
-	"city": "New York",
-	"state_or_province": "New York",
-	"postal_code": "10011",
-	"country": "United States",
-	"timezone": "America/New_York",
-	"language": "en",
-	"currency": "USD"
-};	
-
 
 program
   .command('createproject <project_name>')

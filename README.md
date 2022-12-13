@@ -90,7 +90,7 @@ Now, the important bit. Create a new project.
 
 Here is the main command:
 ```
-bim360cli <hub_id> <project_name> <template_project_id> <user_email>
+bim360cli masterCreate <hub_id> <project_name> <template_project_id> <user_email> -params (optional project settings)
 ```
 
 This requires a few inputs...
@@ -98,10 +98,14 @@ This requires a few inputs...
 - `<project_name>` - the name of the new project
 - `<template_project_id>` - a template ID, from STEP 2. This will be the project you want to clone
 - `<user_email>` - Provide an email. This email / user, will be the project-admin for the new project
+- `-params <json>` - (optional) overrides the default values for a new project.  
 
-Example:
+
+## EXAMPLE:
+
+Here is an example of creating a new "Design-Bid Commercial" Project, located in Sydney, called 'myNewProject' :
 ```
-bim360cli masterCreate a4f95080-84fe-4281-8d0a-bd8c885695e0 myNewProject b5135e2b-c255-4cd0-a160-79c73835775a the-boss@gmail.com
+bim360cli masterCreate a4f95080-84fe-4281-8d0a-bd8c885695e0 myNewProject2 b5135e2b-c255-4cd0-a160-79c73835775a admin-only@gmail.com --params '{"service_types":"inSight","start_date":"2023-05-02","end_date":"2024-04-03","value":3000,"address_line_1":"2 Martin Place","city":"Sydney","state_or_province":"New South Wales","postal_code":"3124","country":"Australia","timezone":"Australia/Sydney","language":"en","currency":"AUD","construction_type":"New Construction","contract_type":"Design-Bid","project_type":"Commercial", "job_number":"123" }'
 ```
 
 RESULT:
@@ -154,32 +158,38 @@ Commands:
 ```
 
 
+## PARAMETERS
 
-### CREATE EMPTY PROJECT SCHEMA
 
-There will be an option to modify these values, during project creation.  Currently, it's just the project name and these defaults.
+All parameters come from [BIM 360 Project Parameters API](https://aps.autodesk.com/en/docs/bim360/v1/overview/parameters/)
+and match the UI
 
-JSON example:
+![parameters](https://user-images.githubusercontent.com/440241/207185831-01693ac2-bf54-4d65-a13d-987a82008c95.JPG)
+
+Params Details:
+- [Project_type](https://aps.autodesk.com/en/docs/bim360/v1/overview/parameters/#project-type) : Commercial, Retail, etc
+- [construction_type]() : New Construction, Renovation
+- [contract_type]() : Design-Bid, IPD, etc
+- [currency]() : USD, AUD, etc
+- [timezone](https://aps.autodesk.com/en/docs/bim360/v1/overview/parameters/#timezone) : America/New_York, Australia/Sydney, Pacific/Auckland, etc
+- [trade]() : Architecture, Earthwork, General Contractor, etc
+
+If you don't specify option `-params`, then this default will be used:
 ```
-		{
-			locale: "en",
-			currency : "USD",
-			name : "my project name",
-			address_line_1 : "",
-			address_line_2: "",
-			city: "",
-			postal_code: "",
-			country: "US",
-			job_number: "",
-			business_unit_id: "",
-			timezone: "America/New_York",
-			language: "en",
-			construction_type: "",
-			contract_type: "",
-			state_or_province: "",
-			start_date: "",
-			end_date: "",
-			project_type: "Wind Farm",
-			value: ""
-		}
+{
+	"service_types":"inSight", //doc_manager
+	"start_date": "2023-05-02",
+	"end_date": "2024-04-03",
+	"project_type": "Wind Farm",
+	"value": 3000,
+	"address_line_1":"",
+	"address_line_2":"",
+	"city": "New York",
+	"state_or_province": "New York",
+	"postal_code": "10011",
+	"country": "United States",
+	"timezone": "America/New_York",
+	"language": "en",
+	"currency": "USD"
+}
 ```
