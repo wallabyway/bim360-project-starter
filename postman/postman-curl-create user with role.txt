@@ -1,0 +1,150 @@
+// create new user with role
+
+curl 'https://developer.api.autodesk.com/bim360/admin/v1/projects/cc5a33e9-6abf-4058-88cd-3d3dfe67d537/users:import' \
+-X 'POST' \
+-H 'Content-Type: application/json' \
+-H 'Pragma: no-cache' \
+-H 'Accept: */*' \
+-H 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlU3c0dGRldUTzlBekNhSzBqZURRM2dQZXBURVdWN2VhIn0.eyJzY29wZSI6WyJhY2NvdW50OnJlYWQiLCJhY2NvdW50OndyaXRlIiwiYnVja2V0OmNyZWF0ZSIsImJ1Y2tldDpyZWFkIiwiYnVja2V0OnVwZGF0ZSIsImJ1Y2tldDpkZWxldGUiLCJkYXRhOnJlYWQiLCJkYXRhOndyaXRlIiwiZGF0YTpjcmVhdGUiLCJkYXRhOnNlYXJjaCIsInVzZXI6cmVhZCIsInVzZXI6d3JpdGUiLCJ1c2VyLXByb2ZpbGU6cmVhZCIsInZpZXdhYmxlczpyZWFkIl0sImNsaWVudF9pZCI6IktrSmZwTVoyZ2NBWEEzZ25EUkdod3Z5UDdaSG1tV25aIiwiaXNzIjoiaHR0cHM6Ly9kZXZlbG9wZXIuYXBpLmF1dG9kZXNrLmNvbSIsImF1ZCI6Imh0dHBzOi8vYXV0b2Rlc2suY29tIiwianRpIjoiV0pTVUlJSU5LOFhadDJQQUF2anR0WVlFRWZ4TXFIazh4U2RKb2J2ZmlQWlZEN1lRWlU1cjIwazhlRG9ZZFBORSIsInVzZXJpZCI6IjIwMDgxMTIwMDQwNzgwNCIsImV4cCI6MTY2ODQ2Nzg3M30.NBUCjyLZRs71VXCFBfELKp2wUPz0eDNJ22xboiVFB0U2Au74anHc4RsoFY2ni7FcqVX_2N2FYrnzbDML_v3u-hKZR3PSmlFRMm2aKpiSythkJZjsN3kvbmJ9EQNs3FVdJMmWb35g9PLkx7e3Bgmp72PBIZ5-Y6gL20XfdupXAZflisLXqA_1uiNNoPL11lbREJPioF1WKtLeCMIqH-Hj4qn45QQuf9NuCGBQY08Yly-wo1FiPEmXrhxg1P0-6qOXr60c4qteOfK46v3ODX9d6UvfCEIBhPg6mPE8UM8yAZi1Lf8772wIk9a1Pcjv94VMdfGh2LxVINX4P2oqeKNhSw' \
+-H 'Accept-Language: en-US,en;q=0.9' \
+-H 'Accept-Encoding: gzip, deflate, br' \
+-H 'Cache-Control: no-cache' \
+-H 'Host: developer.api.autodesk.com' \
+-H 'Origin: https://acc.autodesk.com' \
+-H 'Content-Length: 667' \
+-H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15' \
+-H 'Referer: https://acc.autodesk.com/' \
+-H 'Connection: keep-alive' \
+--data-binary '{"users":[{"email":"michael.beale@autodesk.com","services":[{"serviceName":"projectAdministration","access":"none"},{"serviceName":"documentManagement","access":"member"},{"serviceName":"projectManagement","access":"none"},{"serviceName":"costManagement","access":"none"},{"serviceName":"quantification","access":"none"},{"serviceName":"fieldManagement","access":"none"},{"serviceName":"assets","access":"none"},{"serviceName":"modelCoordination","access":"none"},{"serviceName":"designCollaboration","access":"none"},{"serviceName":"insight","access":"member"}],"companyId":"c6472883-367e-40af-a70e-9f61cd43d1ea","roleIds":["9e595365-8507-4993-b318-bd9a9e0c8f31"]}]}'
+
+
+----
+// get roles
+https://developer.api.autodesk.com/bim360/admin/v1/projects/cc5a33e9-6abf-4058-88cd-3d3dfe67d537/roles?limit=200
+
+{
+    "pagination": {
+        "limit": 200,
+        "offset": 0,
+        "nextUrl": null,
+        "previousUrl": null,
+        "totalResults": 13
+    },
+    "results": [
+        {
+            "id": "fea84eef-cbc6-47f8-9396-8cc38466a6ad",
+            "name": "Architect",
+            "key": "architect",
+            "status": "active",
+            "accountId": "19315b90-41d1-493b-9dfb-a94386da43a7",
+      {
+            "id": "9e595365-8507-4993-b318-bd9a9e0c8f31",
+            "name": "BIM Manager",
+            "key": "bim_manager",
+            "status": "active",
+            "accountId": "19315b90-41d1-493b-9dfb-a94386da43a7",
+            "templateId": "9fae6d17-98b9-4ca1-8947-95d4b3d38889",
+            "createdAt": "2022-11-09T14:20:09.912Z",
+            "updatedAt": "2022-11-09T14:20:11.646Z",
+            "projectId": "cc5a33e9-6abf-4058-88cd-3d3dfe67d537",
+            "memberGroupId": "222709562",
+            "serviceAccesses": [
+                {
+                    "serviceName": "projectAdministration",
+                    "access": true
+                },
+      {
+            "id": "9e595365-8507-4993-b318-bd9a9e0c8f31",
+            "name": "BIM Manager",
+            "key": "bim_manager",
+            "status": "active",
+            "accountId": "19315b90-41d1-493b-9dfb-a94386da43a7",
+            "templateId": "9fae6d17-98b9-4ca1-8947-95d4b3d38889",
+            "createdAt": "2022-11-09T14:20:09.912Z",
+            "updatedAt": "2022-11-09T14:20:11.646Z",
+            "projectId": "cc5a33e9-6abf-4058-88cd-3d3dfe67d537",
+            "memberGroupId": "222709562",
+            "serviceAccesses": [
+                {
+                    "serviceName": "projectAdministration",
+                    "access": true
+                },
+
+
+
+        {
+            "id": "19bfe072-cd6d-4334-8231-3bde8796c8a0",
+            "name": "Document Manager",
+            "key": "document_manager",
+            "status": "active",
+            "accountId": "19315b90-41d1-493b-9dfb-a94386da43a7",
+            "templateId": "4d676394-0506-42ae-9476-a2b6acd65bee",
+
+        {
+            "id": "17f5d424-3638-479c-ae86-994505037797",
+            "name": "VDC Manager",
+            "key": "vdc_manager",
+            "status": "active",
+            "accountId": "19315b90-41d1-493b-9dfb-a94386da43a7",
+            "templateId": "7d8402f5-e586-4319-b365-bfe7644fbd0e",
+   
+
+-------------
+// get user list
+https://developer.api.autodesk.com/construction/admin/v1/projects/cc5a33e9-6abf-4058-88cd-3d3dfe67d537/users?limit=50&offset=0&orFilters=name%2Cemail&filter%5Bproducts%5D=projectAdministration&sort=addedOn+desc
+
+{
+    "pagination": {
+        "limit": 50,
+        "offset": 0,
+        "totalResults": 2
+    },
+    "results": [
+        {
+            "id": "fee08333-77ec-4e11-80c1-8d8cf7474c9b",
+            "email": "michael.beale@autodesk.com",
+            "name": "Michael Beale",
+            "firstName": "Michael",
+            "lastName": "Beale",
+            "autodeskId": "200811200407804",
+            "analyticsId": "SqEGIsnge+QtL95CO4cS8I2V3TQ=",
+            "addressLine1": "",
+            "addressLine2": "",
+            "city": "",
+            "stateOrProvince": "CA",
+            "postalCode": "94106",
+            "country": "US",
+            "imageUrl": "https://images.profile.autodesk.com/200811200407804/profilepictures/x50.jpg?r=637171566627390000",
+            "phone": null,
+            "jobTitle": "Concrete Detailer",
+            "industry": "Buildings",
+            "aboutMe": "Michael Beale is
+
+            "accessLevels": {
+                "accountAdmin": true,
+                "projectAdmin": false,
+                "executive": false
+            },
+            "addedOn": "2022-11-14T22:21:18.162Z",
+            "updatedAt": "2022-11-14T22:21:18.162Z",
+            "companyId": "c6472883-367e-40af-a70e-9f61cd43d1ea",
+            "companyName": "Non-Production-Granite",
+            "roleIds": [
+                "9e595365-8507-4993-b318-bd9a9e0c8f31"
+            ],
+            "roles": [
+                {
+                    "id": "9e595365-8507-4993-b318-bd9a9e0c8f31",
+                    "name": "BIM Manager"
+                }
+            ],
+            "status": "active",
+            "products": [
+                {
+                    "key": "projectAdministration",
+                    "access": "none"
+                },
+                {
+                    "key": "docs",
+                    "access": "member"
+                },
