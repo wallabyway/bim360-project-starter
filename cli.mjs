@@ -44,7 +44,7 @@ program
   .command('listhubs')
   .description('list all ACC/BIM 360 hubs and their IDs.')
   .action(async () => {
-    console.table(await projects.showHubs(TOKEN3));
+    console.table(await projects.showHubs(TOKEN2));
 	console.log('export HUB_ID= <pick one^^^>');
   });
 

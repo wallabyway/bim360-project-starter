@@ -5,29 +5,40 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export class projects {
 	static async showHubs(token) {
-		// USES 3-lEGGED
+		// USES 2-lEGGED
 		//const url = `https://developer.api.autodesk.com/ea-api/v1/project_entitlements?service_categories=next_gen%2Cadmin&current_service_type=hq&include_services=false&include_containers=false&limit=400`;
-		const url = `https://developer.api.autodesk.com/ea-api/v1/account_entitlements?service_categories=next_gen,classic,admin&include_services=true&limit=200&offset=0`;
-		const data = await (await fetch(url, {headers: _header(token)} )).json();
-		if (data.message) { console.table(data); process.exit(1)}
-		return data.accounts.map( item => { return { id: item.account_id, name: item.account_display_name, region: item.region }});		
+		const url = `https://developer.api.autodesk.com/project/v1/hubs`;
+		const resp = await (await fetch(url, {headers: _header(token)} )).json();
+		if (resp.message) { console.table(data); process.exit(1)}
+		return resp.data.map( item => { return {  id: item.id, name: item.attributes.name, region: item.attributes.region }});		
 	}
 
 	static async list(token, account_id) {
 		// USES 2-lEGGED
-		//const url = `https://developer.api.autodesk.com/bim360/admin/v1/accounts/${account_id}/projects?limit=500&sort[]=name+asc`;
+		//const url = `https://developer.api.autodesk.com/bim360/admin/v1/accounts/${account_id}/projects?limit=500&sort[]=created_at+asc`;
 		const url = `https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/projects`;
-		const data = await (await fetch(url, {headers: _header(token)} )).json();
-		return data.map( item => { return { id: item.id, name: item.name }});		
+		const res = await fetch(url, {headers: _header(token)} );
+		if (res.status != 202) 
+			console.log(res.status,res.statusText);
+		const json = await res.json();
+		return json.map( item => { return { id: item.id, name: item.name }});		
+	}
+
+	static async alreadyExist(token, account_id, name ) {
+		// USES 2-lEGGED
+		const projlist = await this.list(token, account_id);
+		const res = projlist.filter(p => {return p.name == name});
+		if (res[0]) console.log(`project "${name}" already Exists...skipping ahead`)
+		return (res[0]) ? res[0].id : null;
 	}
 
 	static async createEmpty(token, account_id, params ) {
 		// USES 2-lEGGED
 		const url = `https://developer.api.autodesk.com/hq/v1/accounts/${account_id}/projects`
 		const res = await fetch(url, { method: 'POST', body:JSON.stringify(params), headers: _header(token) });
-		const project_id = (await res.json()).id;
-		console.log(`created project "${project_id}"`)
-		return project_id;
+		const project_id = await res.json();
+		console.log(`created empty project "${project_id.id}"`)
+		return project_id.id;
 	}
 
 	static async getCompanyandUserFromEmail(token, account_id, user_email) {
@@ -67,6 +78,7 @@ export class projects {
 		    "services": [
 		        { "serviceName": "projectAdministration" },
 		        { "serviceName": "documentManagement" },
+				{ "serviceName":"designCollaboration" },
 		        { "serviceName": "insight" }
 		    ],
 		    "template": { "projectId": `${template_project_id}` }
@@ -76,10 +88,10 @@ export class projects {
 		const url = `https://developer.api.autodesk.com/bim360/admin/v1/projects/${dst_project_id}`;
 		const res = await fetch(url, { method: 'PATCH', headers: hdr, body: JSON.stringify(body) });
 		if (res.status != 202) 
-			console.log(res.status,res.statusText);
+			throw(`copyTemplate failed (${res.status} ${res.statusText}) from templateID: ${template_project_id} -> ${dst_project_id}`);
 		const out = await res.json();
-		console.log(`project activated, copying template ${template_project_id}... waiting 20seconds `);
-		await delay(20000);
+		console.log(`project activated, copying template ${template_project_id}... waiting 2 seconds `);
+		await delay(2000);
 /*
 		//wait project status = active: 
 		// https://developer.api.autodesk.com/hq/v1/accounts/:account_id/projects/:project_id
