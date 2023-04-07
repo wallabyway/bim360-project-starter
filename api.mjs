@@ -9,7 +9,7 @@ export class projects {
 		//const url = `https://developer.api.autodesk.com/ea-api/v1/project_entitlements?service_categories=next_gen%2Cadmin&current_service_type=hq&include_services=false&include_containers=false&limit=400`;
 		const url = `https://developer.api.autodesk.com/project/v1/hubs`;
 		const resp = await (await fetch(url, {headers: _header(token)} )).json();
-		if (resp.message) { console.table(data); process.exit(1)}
+		if (!resp.data) { console.table(resp); process.exit(1)}
 		return resp.data.map( item => { return {  id: item.id, name: item.attributes.name, region: item.attributes.region }});		
 	}
 
@@ -67,6 +67,7 @@ export class projects {
 		// check that project is activated, sleep and try again ?
 		console.log(`getting Root Folder of Project: ${project_id}`);
 		const res = await (await fetch(`https://developer.api.autodesk.com/project/v1/hubs/b.${account_id}/projects/b.${project_id}/topFolders?projectFilesOnly=true&excludeDeleted=true`, { headers: _header(token) })).json();
+		if (!res.data) throw(res);
 		const topFolderURN = res.data.filter(i=>{return i.attributes.displayName=="Project Files"})[0].id;
 		return topFolderURN;
 	}

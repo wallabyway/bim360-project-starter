@@ -69,18 +69,27 @@ program
 	const user_id = await projects.assignSelfToProject(TOKEN2, hub_id, empty_project_id, user_email);
 	const template_topfolder_urn = await projects.getTopFolderURN(TOKEN2, hub_id, template_project_id);
 	// has template been fully copied over yet ?
+	await delay(8000);
+	console.log(`waiting for Docs to activate, before retrieving TopFolderURN )`);
 	const empty_topfolder_urn = await projects.getTopFolderURN(TOKEN2, hub_id, empty_project_id);
 
-	console.log(`click this link to open new Project: https://docs.b360.autodesk.com/projects/${empty_project_id}/folders/${empty_topfolder_urn}/detail`);
+	console.table({"click this link to open new Project":`https://docs.b360.autodesk.com/projects/${empty_project_id}/folders/${empty_topfolder_urn}/detail`});
 
-	console.log('In the meantime, I"m copying the Files over... back soon');
-	await fileUtils.copyFolderRecursively(TOKEN2, 
-		template_project_id, template_topfolder_urn, 
-		empty_project_id, empty_topfolder_urn
-  	);
-	delay(10000);
-	console.log("finished");
+	console.log(`now copy the files over with this command... (note: it's prone to failing, so it's now a seperate command)`);
+	console.log(`bim360cli copyfilesAlt ${template_project_id} ${template_topfolder_urn} ${empty_project_id} ${empty_topfolder_urn}`);
 });
+
+program
+  .command('copyfilesAlt <template_project_id> <template_topfolder_urn> <empty_project_id> <empty_topfolder_urn>')
+  .description('copy files in root folder of template into destination project root folder')
+  .action(async (template_project_id, template_topfolder_urn, empty_project_id, empty_topfolder_urn) => {
+    console.log(`STARTED copying files`);
+	await fileUtils.copyFolderRecursively(
+		TOKEN2, template_project_id, template_topfolder_urn, empty_project_id, empty_topfolder_urn
+  	);
+	await delay(500);
+    console.log(`Please wait...copying files`);
+  });
 
 program
   .command('createproject <project_name>')
@@ -126,7 +135,6 @@ program
     console.table(res);
     console.log(`finished copying files`);
   });
-
 
 program
   .command('createworksharing <folder_id>')

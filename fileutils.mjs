@@ -9,9 +9,14 @@ export class fileUtils {
 	// OUT: none
 	// Purpose: copy files in root folder of BIM 360 Project, into a destination BIM 360 Folder. Works with ACC too.
 	static async copyFiles(token, srcFolderURL, dstFolderURL) {
-		const [sproject_id, sfolder_id] = this.parseURL(srcFolderURL);
-		const [dproject_id, dfolder_id] = this.parseURL(dstFolderURL);
-		await this.copyFolderRecursively(token, sproject_id, sfolder_id, dproject_id, dfolder_id);
+		try {
+			const [sproject_id, sfolder_id] = this.parseURL(srcFolderURL);
+			const [dproject_id, dfolder_id] = this.parseURL(dstFolderURL);
+			await this.copyFolderRecursively(token, sproject_id, sfolder_id, dproject_id, dfolder_id);	
+		}
+		catch(err) {
+			console.log(err);
+		}
 	}
 
 	static parseURL(url_) {
@@ -46,6 +51,7 @@ export class fileUtils {
 	static async fetchFolderContents(token, project_id, folder_urn) {
 		const url = `https://developer.api.autodesk.com/data/v1/projects/b.${project_id}/folders/${folder_urn}/contents`;
 		const json = await ( await fetch(url, { headers: { Authorization: `Bearer ${token}` } }) ).json();
+		if (json.errors) throw(json.errors[0])
 		return [json.included,json.data.filter( i => {return i.type=="folders"}).map(i => {return i.id})];
 	}
 

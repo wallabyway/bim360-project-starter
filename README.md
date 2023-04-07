@@ -1,57 +1,25 @@
 # bim360-project-starter
 Create a new Project in BIM360/ACC copied from a Project Template, using a command line tool called '`bim360cli`'.  It uses [Autodesk APIs](aps.autodesk.com) under the hood.
 
-Open a Terminal, and follow the steps below:
+![parameters](https://user-images.githubusercontent.com/440241/207185831-01693ac2-bf54-4d65-a13d-987a82008c95.JPG)
+
+
+## QUICK START GUIDE:  INSTALL, then RUN
 
 ### INSTALL
+
+1. [Install NPM](https://nodejs.org/en/download) on your computer, and type this into a terminal:
+
 ```
 npm i -g bim360-project-starter
 ```
 
 
-# SETUP
-
-Authenticate both 2-legged and 3-legged tokens.
-
-1. Start by getting your [Forge Key and Secret](http://forge.autodesk.com/myapps/)
-2. Following [this tutorial](https://forge-tutorials.autodesk.io/#create-an-account) to provision [access into your Hub](https://forge-tutorials.autodesk.io/#provision-access-in-other-products)
-
-2. Add KEY & SECRET into your environment and run `login`, like so:
-
+2. Next, type in your Forge KEY & SECRET (see [references](#REFERENCES) below) and run a test (listhubs), like this:
 ```
 export KEY=1234;
 export TOKEN=1234;
-bim360cli login
-```
-3. A browser will launch.  Login to BIM 360 as account admin.
-
-4. Once logged in, copy the TOKEN3 text, into the terminal and set TOKEN3 environment variable, like this...
-
-```
-export TOKEN3=1234;
-```
-
-Check everything is working, by running step 1 below...
-
-<br><br>
-
-# GET STARTED
-
-There are 4 steps:
-
-1. `listhubs' - Find your Hub ID
-2. `listprojects' - Find your Template ID
-3. 'masterCreate` - Create Project
-4. Verify
-
-<br>
-
-### STEP 1 - GET HUB
-
-Run the command...
-
-```
-> bim360cli listhubs
+bim360cli listhubs
 ```
 
 You should see a list of hubs, similar to this:
@@ -62,11 +30,35 @@ You should see a list of hubs, similar to this:
 |1| '489c5e7a-c6c0-4212-81f3-3529a621210b' |     'Developer Advocacy Support'  |  'US'  |
 
 
+3. Now, login to BIM360 via a browser, to get a 3-legged token, by typing in this:
+```
+bim360cli login
+```
+4. A browser will launch.  Login to BIM 360 as account admin.
+
+5. Once logged in, press CTRL-C in the terminal, and copy the export command into the terminal, like this:
+```
+export TOKEN3=1234
+```
+
+That's it for the setup, now let's run some commands...
+
+### RUN
+
+There are 3 steps:
+
+1. `listprojects' - Find your Template ID
+2. 'masterCreate` - Create Project
+3. 'copyfilesAlt` - Copy Files from Template to New Project
+
+
+
+
 <br>
 
-### STEP 2 - GET TEMPLATE ID
+### STEP 1 - listprojects
 
-Find your Template ID, by listing the projects, with command  `listprojects` `<hub id>`  
+Use this to find your Template ID, by listing the projects, with command  `listprojects` `<hub id>`  
 Use the HUB ID, from the previous step, like this:
 
 ```
@@ -82,13 +74,22 @@ Which gives a list of projects, like this:
 |    3    | '03342a00-a231-49fc-8e21-4603d2f4da7d' |    'Michael_Test_Project'    |
 
 
+
 <br><br>
 
-### STEP 3 - CREATE
+### STEP 2 - masterCreate
 
-Now, the important bit. Create a new project.
+Now, create a new project, from a template.
 
-Here is the main command:
+#### EXAMPLE 1:
+
+Here is the quickest example of creating a new Project called "myNewProject2", using default parameters:
+```
+bim360cli masterCreate a4f95080-84fe-4281-8d0a-bd8c885695e0 myNewProject2 b5135e2b-c255-4cd0-a160-79c73835775a admin-only@gmail.com
+```
+
+
+Here is the full command with parameters:
 ```
 bim360cli masterCreate <hub_id> <project_name> <template_project_id> <user_email> -params (optional project settings)
 ```
@@ -101,36 +102,52 @@ This requires a few inputs...
 - `-params <json>` - (optional) overrides the default values for a new project.  
 
 
-## EXAMPLE:
+#### EXAMPLE 2 (with params):
 
-Here is an example of creating a new "Design-Bid Commercial" Project, located in Sydney, called 'myNewProject' :
+Here is a full example of creating a new Project, with type "Design-Bid Commercial", located in Sydney, called 'myNewProject3' :
 ```
-bim360cli masterCreate a4f95080-84fe-4281-8d0a-bd8c885695e0 myNewProject2 b5135e2b-c255-4cd0-a160-79c73835775a admin-only@gmail.com --params '{"service_types":"inSight","start_date":"2023-05-02","end_date":"2024-04-03","value":3000,"address_line_1":"2 Martin Place","city":"Sydney","state_or_province":"New South Wales","postal_code":"3124","country":"Australia","timezone":"Australia/Sydney","language":"en","currency":"AUD","construction_type":"New Construction","contract_type":"Design-Bid","project_type":"Commercial", "job_number":"123" }'
+bim360cli masterCreate a4f95080-84fe-4281-8d0a-bd8c885695e0 myNewProject3 b5135e2b-c255-4cd0-a160-79c73835775a admin-only@gmail.com --params '{"service_types":"inSight","start_date":"2023-05-02","end_date":"2024-04-03","value":3000,"address_line_1":"2 Martin Place","city":"Sydney","state_or_province":"New South Wales","postal_code":"3124","country":"Australia","timezone":"Australia/Sydney","language":"en","currency":"AUD","construction_type":"New Construction","contract_type":"Design-Bid","project_type":"Commercial", "job_number":"123" }'
 ```
 
 RESULT:
 
+All folders and role permissions on the folders, will be copied from the template, to the new project.
+
+You should see a link to open the new Project in a browser:
 
 `open` [https://docs.b360.autodesk.com/projects/743cbb3e-9549-4223-a513-b059dbe2681e/folders/urn:adsk.wipprod:fs.folder:co.dlh-TZTOTSepUTxtSP09og/detail](https://docs.b360.autodesk.com/projects/743cbb3e-9549-4223-a513-b059dbe2681e/folders/urn:adsk.wipprod:fs.folder:co.dlh-TZTOTSepUTxtSP09og/detail)
-
-
-It will take about 30 seconds to complete the process.  
-All folders, files, and role permissions on the folders, will be copied from the template, to the new project.
-
-Once finished, a new browser link will appear (circled in red)...
 
 ![terminal-result](https://user-images.githubusercontent.com/440241/206986811-c992a95a-867a-497c-94a8-a80390444be1.JPG)
 
 
-Open this link in a browser, to verify the new project in BIM 360.
+Also, you will see a prompt, to copy and run a `copyfilesAlt` command.  This is discussed in step 3 below.
 
-<br> 
 
-### STEP 4: VERIFY
- 
-Verify the project was successfully created and cloned.
+<br><br>
 
-All Done !
+### STEP 3 - Copy Files
+
+This last step is optional.  Copy the 'copyfilesAlt' prompt into the terminal and run, like this:
+
+```
+bim360cli copyfilesAlt b5135e2b-c255-4cd0-a160-79c73835775a urn:adsk.wipprod:fs.folder:co.WkxDJJlnQAyHMkCeS7PRdw 7a18437c-2812-4a49-bbc5-32254a32f93b urn:adsk.wipprod:fs.folder:co.S7sIoldKRyaA6d8-uTSklw
+```
+
+This will copy files from the source Project, to the destination Project.
+The prompt will return after it has finished copying.  It could take a few seconds, to a few minutes.
+
+Use the browser link, to open the project and verify everything copied correctly.
+
+That's it !
+<br>
+<hr>
+
+
+# REFERENCES
+
+1. How to get your [Forge Key and Secret](http://forge.autodesk.com/myapps/)
+2. Following [this tutorial](https://forge-tutorials.autodesk.io/#create-an-account) to provision [access into your Hub](https://forge-tutorials.autodesk.io/#provision-access-in-other-products)
+
 
 <br>
 <hr>
@@ -153,6 +170,7 @@ Commands:
   importusers <g_spreadsheet_url>                                          import users from google spreadsheet, into a bim360 hub
   assignusers <project_id> <g_spreadsheet_url>                             Assign users to a project, from google spreadsheet
   copyfiles <srcFolderURL> <dstFolderURL>                                  copy files in root folder of template into destination project root folder
+  copyfilesAlt <template_project_id> <template_topfolder_urn> <empty_project_id> <empty_topfolder_urn>
   createworksharing <folder_id>                                            create a new Revit cloud worksharing file in a folder
   help [command]                                                           display help for command                                                      display help for command
 ```
@@ -193,3 +211,5 @@ If you don't specify option `-params`, then this default will be used:
 	"currency": "USD"
 }
 ```
+
+
