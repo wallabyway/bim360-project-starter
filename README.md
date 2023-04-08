@@ -6,6 +6,8 @@ Create a new Project in BIM360/ACC copied from a Project Template, using a comma
 
 ## QUICK START GUIDE:  INSTALL, then RUN
 
+https://user-images.githubusercontent.com/440241/230696738-be9758b6-8690-49e1-9737-5203bb03a4ff.mov
+
 ### INSTALL
 
 1. [Install NPM](https://nodejs.org/en/download) on your computer, and type this into a terminal:
