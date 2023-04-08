@@ -18,7 +18,7 @@ npm i -g bim360-project-starter
 2. Next, type in your Forge KEY & SECRET (see [references](#REFERENCES) below) and run a test (listhubs), like this:
 ```
 export KEY=1234;
-export TOKEN=1234;
+export SECRET=1234;
 bim360cli listhubs
 ```
 
