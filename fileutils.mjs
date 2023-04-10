@@ -21,14 +21,15 @@ export class fileUtils {
 
 	static parseURL(url_) {
 		const params = url_.split('/');
-		return [ `b.${params[4]}`, params[6] ];
+		return [ `${params[4]}`, params[6] ];
 	}
 
 	// PURPOSE: recursively copy ACC/BIM360 files and folders, from source folder to destination folder.
 	// PRE-CONDITIONS: All Destination Folders must already exist, due to "Create New Project from Template"
 	// INPUTS: 2-legged token, source project_id & folder_id, destination project_id & folder_id
 	static async copyFolderRecursively(token, sproject_id, sfolder_id, dproject_id, dfolder_id) {
-		const [sdir, sfolders] = await this.fetchFolderContents(token, sproject_id, sfolder_id);
+    try {
+      const [sdir, sfolders] = await this.fetchFolderContents(token, sproject_id, sfolder_id);
 		const [ddir, dfolders] = await this.fetchFolderContents(token, dproject_id, dfolder_id);
 		sfolders.forEach( (fold_id, index) => 
 			this.copyFolderRecursively(token, sproject_id, fold_id, dproject_id, dfolders[index])
@@ -46,7 +47,8 @@ export class fileUtils {
 			await this.createVersion(filename, dproject_id, dfolder_id, file_id, token);
 		};
 		console.log(`finished copying folder: ${sfolder_id}`);
-	}
+  } catch(err) {console.log(err)}
+}
 
 	static async fetchFolderContents(token, project_id, folder_urn) {
 		const url = `https://developer.api.autodesk.com/data/v1/projects/b.${project_id}/folders/${folder_urn}/contents`;
@@ -110,7 +112,8 @@ export class fileUtils {
 
 	static async createDstSignedURL(urn, token) {
 		const bucketAndObject = urn.split(':')[3].split("/");
-        const res = await (await fetch( `https://developer.api.autodesk.com/oss/v2/buckets/${bucketAndObject[0]}/objects/${bucketAndObject[1]}/signeds3upload`, { headers: { Authorization: `Bearer ${token}` }})).json();
+      const resp = await fetch( `https://developer.api.autodesk.com/oss/v2/buckets/${bucketAndObject[0]}/objects/${bucketAndObject[1]}/signeds3upload`, { headers: { Authorization: `Bearer ${token}` }});
+      const res = await resp.json();
         return [res.urls[0],res.uploadKey];
     }
 

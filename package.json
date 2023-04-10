@@ -1,11 +1,11 @@
 {
   "name": "bim360-project-starter",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "start a new bim360 project, from a command line tool",
   "main": "cli.mjs",
   "dependencies": {
-    "commander": "^9.4.1",
-    "node-fetch": "^3.2.10"
+    "commander": "^9.5.0",
+    "node-fetch": "^3.3.1"
   },
   "bin": {
     "bim360cli": "cli.mjs"

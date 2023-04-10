@@ -215,3 +215,46 @@ If you don't specify option `-params`, then this default will be used:
 ```
 
 
+
+<br>
+<hr>
+
+# COPY PROJECT FILES
+
+This command copies files from one Project to another Project.  It does this recursively through the folder tree structure.  
+
+
+```
+bim360cli copyFiles <URL_SOURCE> <URL_DESTINATION>
+```
+NOTES: 
+
+- The folder tree structure must match between the source and destination folders.  ie. A Project Template copy
+- This only uses 2-legged token to work. You don't need to use 'bim360cli login' command to make this work, just the 2-legged KEY/SECRET environment variables.
+
+Make sure you click on the "Project" base folder (screenshot: See the thin circles), before you copy the URL, and paste it into the commandline.
+
+Screenshot:
+![bim360cli-copyfiles](https://user-images.githubusercontent.com/440241/231015567-930013e4-a666-436b-943a-a62c698e3a33.jpg)
+
+
+#### EXAMPLE:
+**COMMAND LINE:**
+
+```
+bim360cli copyFiles https://docs.b360.autodesk.com/projects/b5135e2b-c255-4cd0-a160-79c73835775a/folders/urn:adsk.wipprod:fs.folder:co.WkxDJJlnQAyHMkCeS7PRdw/detail https://docs.b360.autodesk.com/projects/b3d06d3b-f9a1-4427-a2f4-a8a38693cff1/folders/urn:adsk.wipprod:fs.folder:co.haFE0vV5RiyahT76Ki36FA/detail
+```
+
+**OUTPUT:**
+
+```
+copying folder: urn:adsk.wipprod:fs.folder:co.WkxDJJlnQAyHMkCeS7PRdw to urn:adsk.wipprod:fs.folder:co.lIAUm3b-Ssq14P362cEjSA
+copying file: readme.pdfcopying folder: urn:adsk.wipprod:fs.folder:co.OnaiJ_mXSza82KCVdE826g to urn:adsk.wipprod:fs.folder:co.931GwAdiRl-XaO0Sb7iFpQ
+copying file: Transportation Systems.rvt
+copying folder: urn:adsk.wipprod:fs.folder:co.EM86lsT2TzKbQwCquJakDw to urn:adsk.wipprod:fs.folder:co.haFE0vV5RiyahT76Ki36FA
+copying file: bracket-assembly.pdf
+copying file: steel-frame-16083-BW2033.pdf
+finished copying folder: urn:adsk.wipprod:fs.folder:co.EM86lsT2TzKbQwCquJakDw
+finished copying files
+finished copying folder: urn:adsk.wipprod:fs.folder:co.OnaiJ_mXSza82KCVdE826g
+```
